@@ -2,11 +2,12 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Net;
 using System.Security.AccessControl;
 using System.Security.Principal;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using Microsoft.Win32;
 
 // MultiRoblox Controller
 // One window, one button. Each press launches another Roblox client, so you
@@ -22,6 +23,7 @@ internal sealed class ControllerForm : Form
 
     private readonly Label _countLabel = new Label();
     private readonly Label _guardLabel = new Label();
+    private readonly Label _versionLabel = new Label();
     private readonly ListView _clientList = new ListView();
     private readonly TextBox _log = new TextBox();
     private readonly Button _launchButton = new Button();
@@ -39,7 +41,7 @@ internal sealed class ControllerForm : Form
 
     public ControllerForm()
     {
-        Text = "MultiRoblox";
+        Text = "MultiRoblox " + VersionText();
         try
         {
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
@@ -68,6 +70,14 @@ internal sealed class ControllerForm : Form
         subtitle.ForeColor = MutedColor;
         subtitle.Location = new Point(22, 56);
         Controls.Add(subtitle);
+
+        _versionLabel.Text = VersionText();
+        _versionLabel.AutoSize = true;
+        _versionLabel.ForeColor = MutedColor;
+        _versionLabel.Font = new Font("Segoe UI", 9f);
+        _versionLabel.Location = new Point(ClientSize.Width - 80, 24);
+        _versionLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        Controls.Add(_versionLabel);
 
         _launchButton.Text = "Launch Instance";
         _launchButton.Size = new Size(476, 68);
@@ -153,10 +163,23 @@ internal sealed class ControllerForm : Form
 
     private void OnLoad(object sender, EventArgs e)
     {
-        AcquireGuard();
+        // Roblox must not already own the singleton Event, otherwise the next
+        // launch will take over and close the first client. Only when Roblox
+        // holds that lock do we close the open clients to free it.
+        if (EventNameHeldByRoblox())
+        {
+            int closed = StopAllPlayers();
+            if (closed > 0)
+                AppendLog("Closed " + closed
+                    + " already-open Roblox window(s) so multi-instance can start.");
+        }
+
+        EnsureGuard(true);
         RefreshStatus();
         AppendLog("Ready. Your first window uses your saved account.");
         AppendLog("Every extra window opens at the login screen for another account.");
+
+        StartUpdateCheck();
     }
 
     private void OnTopMostChanged(object sender, EventArgs e)
@@ -164,26 +187,215 @@ internal sealed class ControllerForm : Form
         TopMost = _topMost.Checked;
     }
 
+    // ----- Version & auto-update ---------------------------------------
+
+    private const string UpdateRepo = "HyperlinksSpace/MultiRoblox";
+
+    private static Version CurrentVersion()
+    {
+        return typeof(ControllerForm).Assembly.GetName().Version;
+    }
+
+    private static string VersionText()
+    {
+        Version v = CurrentVersion();
+        if (v.Major == 0 && v.Minor == 0)
+            return "dev";
+        return "v" + v.Major + "." + v.Minor + "." + v.Build;
+    }
+
+    // Once at startup: ask GitHub for the newest release. If it is newer than
+    // this build, download it and swap it in. A running exe can be renamed on
+    // Windows, so the update takes effect the next time the app starts.
+    private void StartUpdateCheck()
+    {
+        // Remove leftovers from a previous update.
+        try
+        {
+            string old = Application.ExecutablePath + ".old";
+            if (File.Exists(old)) File.Delete(old);
+        }
+        catch
+        {
+        }
+
+        Thread checker = new Thread(delegate ()
+        {
+            try
+            {
+                CheckAndInstallUpdate();
+            }
+            catch (Exception ex)
+            {
+                AppendLog("Update check failed: " + ex.Message);
+            }
+        });
+        checker.IsBackground = true;
+        checker.Start();
+    }
+
+    private void CheckAndInstallUpdate()
+    {
+        ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+
+        string json;
+        using (WebClient web = new WebClient())
+        {
+            web.Headers.Add("User-Agent", "MultiRoblox");
+            web.Headers.Add("Accept", "application/vnd.github+json");
+            json = web.DownloadString(
+                "https://api.github.com/repos/" + UpdateRepo + "/releases/latest");
+        }
+
+        Match tagMatch = Regex.Match(json,
+            "\"tag_name\"\\s*:\\s*\"v(\\d+)\\.(\\d+)\\.(\\d+)\"");
+        if (!tagMatch.Success)
+            return;
+
+        Version latest = new Version(
+            int.Parse(tagMatch.Groups[1].Value),
+            int.Parse(tagMatch.Groups[2].Value),
+            int.Parse(tagMatch.Groups[3].Value));
+        Version current = CurrentVersion();
+
+        // Dev builds (0.0.*) never self-update; release builds only move forward.
+        if (current.Major == 0 || latest <= current)
+            return;
+
+        AppendLog("Update v" + latest.Major + "." + latest.Minor + "."
+            + latest.Build + " found. Downloading...");
+
+        string exe = Application.ExecutablePath;
+        string fresh = exe + ".new";
+        string url = "https://github.com/" + UpdateRepo
+            + "/releases/latest/download/MultiRoblox.exe";
+        using (WebClient web = new WebClient())
+        {
+            web.Headers.Add("User-Agent", "MultiRoblox");
+            web.DownloadFile(url, fresh);
+        }
+
+        FileInfo info = new FileInfo(fresh);
+        if (!info.Exists || info.Length < 50 * 1024)
+        {
+            try { File.Delete(fresh); } catch { }
+            AppendLog("Update download looked wrong; keeping current version.");
+            return;
+        }
+
+        // Swap: running exe is renamed aside, new one takes its place.
+        string old = exe + ".old";
+        try { if (File.Exists(old)) File.Delete(old); } catch { }
+        File.Move(exe, old);
+        try
+        {
+            File.Move(fresh, exe);
+        }
+        catch
+        {
+            // Roll back so the app still exists on disk.
+            File.Move(old, exe);
+            throw;
+        }
+
+        AppendLog("Updated to v" + latest.Major + "." + latest.Minor + "."
+            + latest.Build + ". It will run the next time you open MultiRoblox.");
+        BeginInvoke((MethodInvoker)delegate
+        {
+            _versionLabel.Text = VersionText() + "  (v" + latest.Major + "."
+                + latest.Minor + "." + latest.Build + " on next start)";
+        });
+    }
+
     // Roblox refuses to open another client while these two named objects
     // already exist. By owning them ourselves for the app's lifetime, every
     // extra client is allowed to start. The second name is intentionally a
     // Mutex so Roblox's attempt to make an Event of the same name collides
     // and fails, which is what keeps additional instances alive.
-    private void AcquireGuard()
+    private void EnsureGuard(bool allowStopRoblox)
     {
+        if (_guardActive && GuardStillOurs())
+            return;
+
+        ReleaseGuardHandles();
+
+        // If Roblox already created ROBLOX_singletonEvent as an Event, we
+        // cannot claim that name as a Mutex. Closing Roblox frees it.
+        if (allowStopRoblox && EventNameHeldByRoblox())
+        {
+            int closed = StopAllPlayers();
+            if (closed > 0)
+                AppendLog("Freed singleton lock by closing " + closed
+                    + " Roblox client(s).");
+            Thread.Sleep(500);
+        }
+
         try
         {
             bool a, b;
             _singletonMutex = CreateSharedMutex("ROBLOX_singletonMutex", out a);
             _singletonEventBlocker =
                 CreateSharedMutex("ROBLOX_singletonEvent", out b);
+
+            // Confirm the Event name is ours (a Mutex), not Roblox's Event.
+            if (EventNameHeldByRoblox())
+            {
+                ReleaseGuardHandles();
+                _guardActive = false;
+                AppendLog("Could not take multi-instance lock. Close every "
+                    + "Roblox window, then press Launch again.");
+                return;
+            }
+
             _guardActive = true;
+            AppendLog("Multi-instance lock held.");
         }
         catch (Exception ex)
         {
+            ReleaseGuardHandles();
             _guardActive = false;
             AppendLog("Guard error: " + ex.Message);
+            AppendLog("Close every Roblox window, then press Launch again.");
         }
+    }
+
+    private void ReleaseGuardHandles()
+    {
+        try { if (_singletonMutex != null) _singletonMutex.Dispose(); }
+        catch { }
+        try { if (_singletonEventBlocker != null) _singletonEventBlocker.Dispose(); }
+        catch { }
+        _singletonMutex = null;
+        _singletonEventBlocker = null;
+        _guardActive = false;
+    }
+
+    // True when something (almost always Roblox) already created
+    // ROBLOX_singletonEvent as an EventWaitHandle. In that state a second
+    // client will tell the first one to quit.
+    private static bool EventNameHeldByRoblox()
+    {
+        try
+        {
+            using (EventWaitHandle.OpenExisting("ROBLOX_singletonEvent"))
+                return true;
+        }
+        catch (WaitHandleCannotBeOpenedException)
+        {
+            return false;
+        }
+        catch
+        {
+            // Wrong type (our Mutex) or access denied — treat as not Roblox's Event.
+            return false;
+        }
+    }
+
+    private bool GuardStillOurs()
+    {
+        if (_singletonMutex == null || _singletonEventBlocker == null)
+            return false;
+        return !EventNameHeldByRoblox();
     }
 
     private static Mutex CreateSharedMutex(string name, out bool created)
@@ -198,9 +410,13 @@ internal sealed class ControllerForm : Form
 
     private void OnLaunchClick(object sender, EventArgs e)
     {
+        // Never launch while Roblox still owns the singleton Event — that is
+        // exactly the "first window quits" failure mode.
+        EnsureGuard(CountPlayers() == 0);
         if (!_guardActive)
         {
-            AcquireGuard();
+            AppendLog("Launch blocked: multi-instance lock is not held.");
+            return;
         }
 
         // The very first window keeps your saved login. Every window after
@@ -410,6 +626,13 @@ internal sealed class ControllerForm : Form
 
     private void OnStopClick(object sender, EventArgs e)
     {
+        int killed = StopAllPlayers();
+        AppendLog("Stopped " + killed + " Roblox client(s).");
+        RefreshStatus();
+    }
+
+    private static int StopAllPlayers()
+    {
         int killed = 0;
         foreach (Process process in
             Process.GetProcessesByName("RobloxPlayerBeta"))
@@ -423,12 +646,22 @@ internal sealed class ControllerForm : Form
             {
             }
         }
-        AppendLog("Stopped " + killed + " Roblox client(s).");
-        RefreshStatus();
+        if (killed > 0)
+        {
+            // Give Windows a moment to release the named Event/Mutex.
+            Thread.Sleep(800);
+        }
+        return killed;
     }
 
     private void OnTimerTick(object sender, EventArgs e)
     {
+        if (_guardActive && EventNameHeldByRoblox())
+        {
+            _guardActive = false;
+            AppendLog("Warning: Roblox took the singleton lock back. "
+                + "Close all Roblox windows and press Launch again.");
+        }
         RefreshStatus();
     }
 
@@ -517,10 +750,7 @@ internal sealed class ControllerForm : Form
     {
         _timer.Stop();
         // Releasing the mutexes returns Roblox to single-instance mode.
-        try { if (_singletonMutex != null) _singletonMutex.Dispose(); }
-        catch { }
-        try { if (_singletonEventBlocker != null) _singletonEventBlocker.Dispose(); }
-        catch { }
+        ReleaseGuardHandles();
     }
 }
 
