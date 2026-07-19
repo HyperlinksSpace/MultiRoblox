@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Net;
 using System.Security.AccessControl;
@@ -24,20 +25,28 @@ internal sealed class ControllerForm : Form
     private readonly Label _countLabel = new Label();
     private readonly Label _guardLabel = new Label();
     private readonly Label _versionLabel = new Label();
+    private readonly Label _instancesHeading = new Label();
+    private readonly Label _activityHeading = new Label();
     private readonly ListView _clientList = new ListView();
     private readonly TextBox _log = new TextBox();
     private readonly Button _launchButton = new Button();
     private readonly Button _stopButton = new Button();
     private readonly CheckBox _topMost = new CheckBox();
+    private readonly Panel _header = new Panel();
+    private readonly Panel _statusBar = new Panel();
     private readonly System.Windows.Forms.Timer _timer =
         new System.Windows.Forms.Timer();
 
-    private static readonly Color BackColorDark = Color.FromArgb(24, 26, 32);
-    private static readonly Color PanelColor = Color.FromArgb(34, 37, 46);
-    private static readonly Color AccentColor = Color.FromArgb(64, 156, 255);
-    private static readonly Color AccentColor2 = Color.FromArgb(109, 179, 255);
-    private static readonly Color TextColor = Color.FromArgb(232, 234, 240);
-    private static readonly Color MutedColor = Color.FromArgb(160, 165, 178);
+    private static readonly Color BackColorDark = Color.FromArgb(14, 16, 22);
+    private static readonly Color PanelColor = Color.FromArgb(28, 32, 42);
+    private static readonly Color PanelElevated = Color.FromArgb(36, 41, 54);
+    private static readonly Color AccentColor = Color.FromArgb(56, 152, 255);
+    private static readonly Color AccentColor2 = Color.FromArgb(110, 188, 255);
+    private static readonly Color TextColor = Color.FromArgb(236, 239, 246);
+    private static readonly Color MutedColor = Color.FromArgb(138, 146, 164);
+    private static readonly Color GoodColor = Color.FromArgb(72, 210, 140);
+    private static readonly Color BadColor = Color.FromArgb(240, 110, 120);
+    private static readonly Color BorderColor = Color.FromArgb(52, 58, 74);
 
     public ControllerForm()
     {
@@ -50,106 +59,154 @@ internal sealed class ControllerForm : Form
         {
         }
         StartPosition = FormStartPosition.CenterScreen;
-        ClientSize = new Size(520, 520);
-        MinimumSize = new Size(460, 480);
+        ClientSize = new Size(560, 620);
+        MinimumSize = new Size(500, 560);
         BackColor = BackColorDark;
         ForeColor = TextColor;
-        Font = new Font("Segoe UI", 9f);
+        Font = new Font("Segoe UI Semibold", 9.25f);
+        FormBorderStyle = FormBorderStyle.FixedSingle;
+        MaximizeBox = false;
+        DoubleBuffered = true;
+        Padding = new Padding(0);
+
+        // Soft header band
+        _header.Location = new Point(0, 0);
+        _header.Size = new Size(ClientSize.Width, 108);
+        _header.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        _header.BackColor = Color.FromArgb(18, 22, 32);
+        _header.Paint += new PaintEventHandler(OnHeaderPaint);
+        Controls.Add(_header);
 
         Label title = new Label();
         title.Text = "MultiRoblox";
-        title.Font = new Font("Segoe UI", 20f, FontStyle.Bold);
-        title.ForeColor = AccentColor;
+        title.Font = new Font("Segoe UI", 26f, FontStyle.Bold);
+        title.ForeColor = TextColor;
         title.AutoSize = true;
-        title.Location = new Point(20, 16);
-        Controls.Add(title);
+        title.Location = new Point(28, 22);
+        title.BackColor = Color.Transparent;
+        _header.Controls.Add(title);
 
         Label subtitle = new Label();
-        subtitle.Text = "Launch as many Roblox instances as you want.";
+        subtitle.Text = "Unlimited Roblox windows · one click each";
         subtitle.AutoSize = true;
         subtitle.ForeColor = MutedColor;
-        subtitle.Location = new Point(22, 56);
-        Controls.Add(subtitle);
+        subtitle.Font = new Font("Segoe UI", 10f);
+        subtitle.Location = new Point(30, 64);
+        subtitle.BackColor = Color.Transparent;
+        _header.Controls.Add(subtitle);
 
         _versionLabel.Text = VersionText();
         _versionLabel.AutoSize = true;
-        _versionLabel.ForeColor = MutedColor;
-        _versionLabel.Font = new Font("Segoe UI", 9f);
-        _versionLabel.Location = new Point(ClientSize.Width - 80, 24);
+        _versionLabel.ForeColor = AccentColor2;
+        _versionLabel.Font = new Font("Segoe UI Semibold", 9f);
+        _versionLabel.BackColor = Color.FromArgb(32, 56, 152, 255);
+        _versionLabel.Padding = new Padding(10, 4, 10, 4);
+        _versionLabel.Location = new Point(ClientSize.Width - 92, 28);
         _versionLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        Controls.Add(_versionLabel);
+        _header.Controls.Add(_versionLabel);
 
         _launchButton.Text = "Launch Instance";
-        _launchButton.Size = new Size(476, 68);
-        _launchButton.Location = new Point(22, 92);
+        _launchButton.Size = new Size(504, 64);
+        _launchButton.Location = new Point(28, 128);
         _launchButton.Anchor = AnchorStyles.Top | AnchorStyles.Left
             | AnchorStyles.Right;
         _launchButton.FlatStyle = FlatStyle.Flat;
         _launchButton.FlatAppearance.BorderSize = 0;
+        _launchButton.FlatAppearance.MouseOverBackColor = AccentColor2;
+        _launchButton.FlatAppearance.MouseDownBackColor =
+            Color.FromArgb(40, 130, 230);
         _launchButton.BackColor = AccentColor;
         _launchButton.ForeColor = Color.White;
-        _launchButton.Font = new Font("Segoe UI", 14f, FontStyle.Bold);
+        _launchButton.Font = new Font("Segoe UI Semibold", 15f);
         _launchButton.Cursor = Cursors.Hand;
         _launchButton.Click += new EventHandler(OnLaunchClick);
-        _launchButton.MouseEnter += delegate { _launchButton.BackColor = AccentColor2; };
-        _launchButton.MouseLeave += delegate { _launchButton.BackColor = AccentColor; };
         Controls.Add(_launchButton);
 
-        _countLabel.AutoSize = true;
-        _countLabel.Font = new Font("Segoe UI", 11f, FontStyle.Bold);
-        _countLabel.Location = new Point(22, 176);
-        Controls.Add(_countLabel);
+        // Status pills row
+        _statusBar.Location = new Point(28, 208);
+        _statusBar.Size = new Size(504, 44);
+        _statusBar.Anchor = AnchorStyles.Top | AnchorStyles.Left
+            | AnchorStyles.Right;
+        _statusBar.BackColor = BackColorDark;
+        Controls.Add(_statusBar);
 
-        _guardLabel.AutoSize = true;
-        _guardLabel.Location = new Point(22, 202);
-        Controls.Add(_guardLabel);
+        StylePill(_countLabel, "0 instances");
+        _countLabel.Location = new Point(0, 6);
+        _statusBar.Controls.Add(_countLabel);
+
+        StylePill(_guardLabel, "Lock: …");
+        _guardLabel.Location = new Point(148, 6);
+        _statusBar.Controls.Add(_guardLabel);
 
         _stopButton.Text = "Stop All";
-        _stopButton.Size = new Size(120, 32);
-        _stopButton.Location = new Point(378, 176);
+        _stopButton.Size = new Size(110, 36);
+        _stopButton.Location = new Point(394, 4);
         _stopButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         _stopButton.FlatStyle = FlatStyle.Flat;
         _stopButton.FlatAppearance.BorderSize = 1;
-        _stopButton.FlatAppearance.BorderColor = Color.FromArgb(90, 96, 110);
+        _stopButton.FlatAppearance.BorderColor = BorderColor;
+        _stopButton.FlatAppearance.MouseOverBackColor = PanelElevated;
         _stopButton.BackColor = PanelColor;
         _stopButton.ForeColor = TextColor;
-        _stopButton.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+        _stopButton.Font = new Font("Segoe UI Semibold", 9.5f);
         _stopButton.Cursor = Cursors.Hand;
         _stopButton.Click += new EventHandler(OnStopClick);
-        Controls.Add(_stopButton);
+        _statusBar.Controls.Add(_stopButton);
 
-        _topMost.Text = "Keep window on top";
+        _topMost.Text = "  Keep on top";
         _topMost.AutoSize = true;
         _topMost.ForeColor = MutedColor;
-        _topMost.Location = new Point(22, 230);
+        _topMost.Font = new Font("Segoe UI", 9.5f);
+        _topMost.Location = new Point(28, 262);
         _topMost.CheckedChanged += new EventHandler(OnTopMostChanged);
         Controls.Add(_topMost);
+
+        _instancesHeading.Text = "RUNNING INSTANCES";
+        _instancesHeading.AutoSize = true;
+        _instancesHeading.ForeColor = MutedColor;
+        _instancesHeading.Font = new Font("Segoe UI Semibold", 8f);
+        _instancesHeading.Location = new Point(30, 298);
+        Controls.Add(_instancesHeading);
 
         _clientList.View = View.Details;
         _clientList.FullRowSelect = true;
         _clientList.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-        _clientList.Location = new Point(22, 260);
-        _clientList.Size = new Size(476, 138);
+        _clientList.Location = new Point(28, 320);
+        _clientList.Size = new Size(504, 150);
         _clientList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
             | AnchorStyles.Left | AnchorStyles.Right;
         _clientList.BackColor = PanelColor;
         _clientList.ForeColor = TextColor;
-        _clientList.BorderStyle = BorderStyle.FixedSingle;
-        _clientList.Columns.Add("#", 40);
+        _clientList.BorderStyle = BorderStyle.None;
+        _clientList.Font = new Font("Segoe UI", 9.5f);
+        _clientList.OwnerDraw = true;
+        _clientList.DrawColumnHeader += new DrawListViewColumnHeaderEventHandler(OnDrawColumnHeader);
+        _clientList.DrawItem += new DrawListViewItemEventHandler(OnDrawItem);
+        _clientList.DrawSubItem += new DrawListViewSubItemEventHandler(OnDrawSubItem);
+        _clientList.Columns.Add("#", 44);
         _clientList.Columns.Add("PID", 90);
         _clientList.Columns.Add("Type", 120);
-        _clientList.Columns.Add("Uptime", 210);
+        _clientList.Columns.Add("Uptime", 230);
         Controls.Add(_clientList);
+
+        _activityHeading.Text = "ACTIVITY";
+        _activityHeading.AutoSize = true;
+        _activityHeading.ForeColor = MutedColor;
+        _activityHeading.Font = new Font("Segoe UI Semibold", 8f);
+        _activityHeading.Location = new Point(30, 484);
+        _activityHeading.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        Controls.Add(_activityHeading);
 
         _log.Multiline = true;
         _log.ReadOnly = true;
         _log.ScrollBars = ScrollBars.Vertical;
-        _log.Location = new Point(22, 408);
-        _log.Size = new Size(476, 92);
+        _log.BorderStyle = BorderStyle.None;
+        _log.Location = new Point(28, 506);
+        _log.Size = new Size(504, 90);
         _log.Anchor = AnchorStyles.Bottom | AnchorStyles.Left
             | AnchorStyles.Right;
-        _log.BackColor = Color.FromArgb(16, 18, 22);
-        _log.ForeColor = Color.FromArgb(150, 200, 150);
+        _log.BackColor = Color.FromArgb(10, 12, 16);
+        _log.ForeColor = Color.FromArgb(130, 210, 170);
         _log.Font = new Font("Consolas", 8.5f);
         Controls.Add(_log);
 
@@ -159,6 +216,77 @@ internal sealed class ControllerForm : Form
 
         Load += new EventHandler(OnLoad);
         FormClosing += new FormClosingEventHandler(OnClosing);
+        Resize += new EventHandler(OnFormResize);
+    }
+
+    private static void StylePill(Label pill, string text)
+    {
+        pill.Text = text;
+        pill.AutoSize = true;
+        pill.Font = new Font("Segoe UI Semibold", 9f);
+        pill.ForeColor = TextColor;
+        pill.BackColor = PanelColor;
+        pill.Padding = new Padding(12, 8, 12, 8);
+    }
+
+    private void OnHeaderPaint(object sender, PaintEventArgs e)
+    {
+        Rectangle r = _header.ClientRectangle;
+        using (LinearGradientBrush brush = new LinearGradientBrush(
+            r,
+            Color.FromArgb(22, 28, 42),
+            Color.FromArgb(14, 16, 22),
+            LinearGradientMode.Vertical))
+        {
+            e.Graphics.FillRectangle(brush, r);
+        }
+        using (Pen pen = new Pen(Color.FromArgb(40, 56, 152, 255), 2f))
+        {
+            e.Graphics.DrawLine(pen, 0, r.Bottom - 1, r.Right, r.Bottom - 1);
+        }
+    }
+
+    private void OnFormResize(object sender, EventArgs e)
+    {
+        // Keep version chip tucked into the header's right edge.
+        _versionLabel.Left = Math.Max(200, _header.Width - _versionLabel.Width - 28);
+        _stopButton.Left = Math.Max(280, _statusBar.Width - _stopButton.Width);
+    }
+
+    private void OnDrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+    {
+        using (SolidBrush bg = new SolidBrush(PanelElevated))
+            e.Graphics.FillRectangle(bg, e.Bounds);
+        TextRenderer.DrawText(
+            e.Graphics,
+            e.Header.Text,
+            new Font("Segoe UI Semibold", 8.25f),
+            e.Bounds,
+            MutedColor,
+            TextFormatFlags.Left | TextFormatFlags.VerticalCenter
+                | TextFormatFlags.LeftAndRightPadding);
+    }
+
+    private void OnDrawItem(object sender, DrawListViewItemEventArgs e)
+    {
+        e.DrawDefault = false;
+    }
+
+    private void OnDrawSubItem(object sender, DrawListViewSubItemEventArgs e)
+    {
+        Color row = (e.ItemIndex % 2 == 0) ? PanelColor : PanelElevated;
+        using (SolidBrush bg = new SolidBrush(row))
+            e.Graphics.FillRectangle(bg, e.Bounds);
+        Color ink = e.ColumnIndex == 0 ? AccentColor2 : TextColor;
+        TextRenderer.DrawText(
+            e.Graphics,
+            e.SubItem.Text,
+            _clientList.Font,
+            e.Bounds,
+            ink,
+            TextFormatFlags.Left | TextFormatFlags.VerticalCenter
+                | TextFormatFlags.LeftAndRightPadding
+                | TextFormatFlags.EndEllipsis);
     }
 
     private void OnLoad(object sender, EventArgs e)
@@ -675,16 +803,18 @@ internal sealed class ControllerForm : Form
         Process[] players = Process.GetProcessesByName("RobloxPlayerBeta");
 
         _countLabel.Text = players.Length == 1
-            ? "1 Roblox instance running"
-            : players.Length + " Roblox instances running";
+            ? "1 instance"
+            : players.Length + " instances";
         _countLabel.ForeColor = players.Length > 0 ? AccentColor2 : MutedColor;
+        _countLabel.BackColor = players.Length > 0
+            ? Color.FromArgb(36, 56, 152, 255)
+            : PanelColor;
 
-        _guardLabel.Text = _guardActive
-            ? "Multi-instance mode: ON"
-            : "Multi-instance mode: off";
-        _guardLabel.ForeColor = _guardActive
-            ? Color.FromArgb(120, 220, 130)
-            : Color.FromArgb(230, 120, 120);
+        _guardLabel.Text = _guardActive ? "Lock ON" : "Lock OFF";
+        _guardLabel.ForeColor = _guardActive ? GoodColor : BadColor;
+        _guardLabel.BackColor = _guardActive
+            ? Color.FromArgb(36, 72, 210, 140)
+            : Color.FromArgb(36, 240, 110, 120);
 
         _clientList.BeginUpdate();
         _clientList.Items.Clear();

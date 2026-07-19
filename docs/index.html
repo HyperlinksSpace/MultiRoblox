@@ -6,136 +6,329 @@
   <title>MultiRoblox &mdash; Run as many Roblox instances as you want</title>
   <meta name="description" content="MultiRoblox lets you run unlimited Roblox instances on one PC. One button per instance. Free, open source, no admin required." />
   <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #181a20;
-      --panel: #22252e;
-      --panel-2: #2a2e39;
-      --accent: #409cff;
-      --accent-2: #6db3ff;
-      --text: #e8eaf0;
-      --muted: #a0a5b2;
-      --good: #78dc82;
+      --bg: #0b0d12;
+      --bg-lift: #12151d;
+      --panel: #171b25;
+      --line: rgba(120, 150, 200, 0.14);
+      --accent: #3b9bff;
+      --accent-2: #7ec2ff;
+      --text: #eef1f7;
+      --muted: #8b93a7;
+      --good: #4fd48e;
+      --glow: rgba(59, 155, 255, 0.35);
     }
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
-      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-      background: radial-gradient(1200px 600px at 50% -10%, #232838 0%, var(--bg) 60%);
+      font-family: "Outfit", sans-serif;
       color: var(--text);
-      line-height: 1.6;
+      background:
+        radial-gradient(900px 520px at 70% -10%, rgba(59, 155, 255, 0.22), transparent 55%),
+        radial-gradient(700px 480px at 10% 20%, rgba(40, 90, 160, 0.18), transparent 50%),
+        linear-gradient(180deg, #0e121a 0%, var(--bg) 40%, #090b10 100%);
+      background-attachment: fixed;
+      line-height: 1.55;
       min-height: 100vh;
+      overflow-x: hidden;
     }
-    .wrap { max-width: 860px; margin: 0 auto; padding: 64px 20px 80px; }
-    header { text-align: center; position: relative; padding-bottom: 72px; }
-    .logo {
-      font-size: 56px; font-weight: 800; letter-spacing: -1px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-      margin: 0;
+
+    .shell { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+    /* —— Hero: one composition —— */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 48px;
+      align-items: center;
+      padding: 48px 0 64px;
     }
-    .tag { color: var(--muted); font-size: 20px; margin-top: 8px; }
-    .cta { margin: 40px 0 12px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .hero-copy { position: relative; z-index: 2; max-width: 34rem; }
+    .brand {
+      margin: 0 0 18px;
+      font-size: clamp(3.4rem, 7vw, 5.4rem);
+      font-weight: 800;
+      letter-spacing: -0.045em;
+      line-height: 0.95;
+      background: linear-gradient(120deg, #fff 10%, var(--accent-2) 55%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rise 0.7s ease both;
+    }
+    .headline {
+      margin: 0 0 14px;
+      font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      animation: rise 0.7s ease 0.08s both;
+    }
+    .lede {
+      margin: 0 0 28px;
+      color: var(--muted);
+      font-size: 1.08rem;
+      max-width: 28rem;
+      animation: rise 0.7s ease 0.14s both;
+    }
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      animation: rise 0.7s ease 0.2s both;
+    }
     .btn {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 16px 28px; border-radius: 12px; font-size: 17px; font-weight: 700;
-      text-decoration: none; transition: transform .08s ease, box-shadow .2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 26px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
     .btn:hover { transform: translateY(-2px); }
-    .btn-primary { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: 0 8px 24px rgba(64,156,255,.35); }
-    .btn-secondary { background: var(--panel-2); color: var(--text); border: 1px solid #3a3f4c; }
-    .hint { text-align: center; color: var(--muted); font-size: 14px; }
-    .hint a { color: var(--accent-2); text-decoration: none; }
-    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin: 48px 0; }
-    .card { background: var(--panel); border: 1px solid #30343f; border-radius: 14px; padding: 22px; }
-    .card h3 { margin: 0 0 6px; font-size: 17px; }
-    .card p { margin: 0; color: var(--muted); font-size: 14px; }
-    section h2 { font-size: 24px; margin-top: 48px; }
-    ol, ul { color: var(--text); }
-    ol li, ul li { margin: 8px 0; }
-    code, .code {
-      background: #10131a; color: #9ec8ff; padding: 3px 8px; border-radius: 6px;
-      font-family: Consolas, monospace; font-size: 13.5px;
+    .btn-primary {
+      background: linear-gradient(105deg, var(--accent), #5ab0ff 55%, var(--accent-2));
+      color: #061018;
+      box-shadow: 0 12px 36px var(--glow);
     }
-    .code-block {
-      background: #10131a; border: 1px solid #2a2e39; border-radius: 10px;
-      padding: 16px; overflow-x: auto; color: #9ec8ff;
-      font-family: Consolas, monospace; font-size: 13.5px; white-space: pre;
+    .btn-ghost {
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      border-color: var(--line);
     }
-    footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 64px; }
-    footer a { color: var(--accent-2); text-decoration: none; }
-    .badge { display:inline-block; background: var(--panel-2); color: var(--good); border:1px solid #3a3f4c; border-radius: 999px; padding: 4px 12px; font-size: 13px; }
+    .meta {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      animation: rise 0.7s ease 0.26s both;
+    }
+    .meta a { color: var(--accent-2); text-decoration: none; }
 
-    /* Language switcher — same UX as AbraKadaVra, MultiRoblox colors */
+    .hero-visual {
+      position: relative;
+      z-index: 1;
+      justify-self: end;
+      width: min(100%, 520px);
+      animation: floatIn 0.9s cubic-bezier(.2,.8,.2,1) 0.15s both;
+    }
+    .hero-visual::before {
+      content: "";
+      position: absolute;
+      inset: 8% -8% -8% 8%;
+      background: radial-gradient(circle at 50% 40%, var(--glow), transparent 62%);
+      filter: blur(28px);
+      z-index: -1;
+      pointer-events: none;
+    }
+    .shot-frame {
+      display: block;
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid rgba(126, 194, 255, 0.22);
+      box-shadow:
+        0 40px 80px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(255,255,255,0.04) inset;
+      background: #0a0c11;
+    }
+
     .lang-switch {
       position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      left: 0; right: 0; bottom: 28px;
+      display: flex; justify-content: center;
       z-index: 5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 0 1rem;
       pointer-events: none;
     }
     .lang-switch-inner {
       display: grid;
-      grid-template-columns: repeat(3, 4.75rem);
-      margin: 0 auto;
-      padding: 0.3rem;
-      background: rgba(16, 18, 24, 0.72);
-      border: 1px solid #3a3f4c;
-      border-radius: 12px;
-      backdrop-filter: blur(8px);
+      grid-template-columns: repeat(3, 4.6rem);
+      padding: 0.28rem;
+      background: rgba(10, 12, 18, 0.72);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      backdrop-filter: blur(12px);
       pointer-events: auto;
     }
     .lang-switch button {
       appearance: none;
-      border: 1px solid transparent;
+      border: 0;
       background: transparent;
       color: var(--muted);
-      font-family: "Segoe UI", system-ui, sans-serif;
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.55rem 0.2rem;
+      cursor: pointer;
+      border-radius: 999px;
+      transition: color .2s ease, background .2s ease;
+    }
+    .lang-switch button:hover { color: var(--text); }
+    .lang-switch button.is-active {
+      color: #061018;
+      background: linear-gradient(105deg, var(--accent), var(--accent-2));
+    }
+
+    /* —— Body sections —— */
+    section { padding: 72px 0 8px; }
+    .section-kicker {
+      margin: 0 0 8px;
       font-size: 0.78rem;
       font-weight: 700;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      padding: 0.55rem 0.35rem;
-      width: 100%;
+      color: var(--accent-2);
+    }
+    .section-title {
+      margin: 0 0 12px;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 750;
+      letter-spacing: -0.03em;
+    }
+    .section-lead {
+      margin: 0 0 36px;
+      color: var(--muted);
+      max-width: 36rem;
+      font-size: 1.05rem;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px 40px;
+      border-top: 1px solid var(--line);
+      padding-top: 36px;
+    }
+    .feature h3 {
+      margin: 0 0 8px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .feature p { margin: 0; color: var(--muted); font-size: 0.98rem; }
+
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 14px;
+      max-width: 40rem;
+    }
+    .steps li {
+      position: relative;
+      padding: 18px 20px 18px 64px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.03), transparent);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+    .steps li::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 18px; top: 50%;
+      transform: translateY(-50%);
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-weight: 700; font-size: 0.9rem;
+      background: rgba(59, 155, 255, 0.15);
+      color: var(--accent-2);
+    }
+
+    .code-block {
+      background: #080a0f;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 20px;
+      overflow-x: auto;
+      color: #9ec8ff;
+      font-family: "IBM Plex Mono", Consolas, monospace;
+      font-size: 0.86rem;
+      white-space: pre;
+      line-height: 1.6;
+    }
+
+    .reqs { margin: 0; padding-left: 1.2rem; color: var(--muted); }
+    .reqs li { margin: 10px 0; }
+    .reqs strong { color: var(--text); }
+
+    footer {
+      margin-top: 80px;
+      padding: 36px 0 56px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.9rem;
       text-align: center;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: color .2s ease, border-color .2s ease, background .2s ease;
     }
-    .lang-switch button:hover {
-      color: var(--text);
-      border-color: rgba(64, 156, 255, 0.45);
+    footer a { color: var(--accent-2); text-decoration: none; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .lang-switch button.is-active {
-      color: #fff;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      border-color: transparent;
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(28px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
-    .lang-switch button:focus-visible {
-      outline: 2px solid var(--accent-2);
-      outline-offset: 2px;
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding: 36px 0 96px;
+        gap: 36px;
+        text-align: center;
+      }
+      .hero-copy { max-width: none; margin: 0 auto; }
+      .lede { margin-left: auto; margin-right: auto; }
+      .cta-row { justify-content: center; }
+      .hero-visual { justify-self: center; width: min(100%, 420px); }
+      .features { grid-template-columns: 1fr; gap: 24px; }
+      .steps li { text-align: left; }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <span class="badge" data-i18n="badge">Free &bull; Open source &bull; No admin needed</span>
-      <h1 class="logo">MultiRoblox</h1>
-      <p class="tag" data-i18n="tagHtml" data-i18n-html>Run <strong>as many Roblox instances</strong> as you want on one PC.</p>
-
-      <div class="cta">
-        <a class="btn btn-primary" data-i18n="download" href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest/download/MultiRoblox.exe">
-          &#8681; Download MultiRoblox.exe
-        </a>
+  <div class="shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <h1 class="brand">MultiRoblox</h1>
+        <p class="headline" data-i18n="headline">As many Roblox windows as you want.</p>
+        <p class="lede" data-i18n="lede">One click opens another client. Sign into different accounts and play side by side on a single PC.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" data-i18n="download" href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest/download/MultiRoblox.exe">Download MultiRoblox.exe</a>
+          <a class="btn btn-ghost" href="https://github.com/HyperlinksSpace/MultiRoblox">GitHub</a>
+        </div>
+        <p class="meta" data-i18n="hintHtml" data-i18n-html>Free · open source · no admin. Windows 10/11.
+          <a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">Latest release</a></p>
       </div>
-      <p class="hint" data-i18n="hintHtml" data-i18n-html>A single .exe &mdash; no install needed. Windows 10/11.
-        See the <a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">latest release</a>.</p>
+
+      <div class="hero-visual">
+        <img
+          class="shot-frame"
+          src="app-screenshot.png"
+          width="566"
+          height="649"
+          alt="MultiRoblox app window showing Launch Instance, live status, and running clients"
+          data-i18n-alt="shotAlt"
+        />
+      </div>
 
       <div class="lang-switch" role="group" aria-label="Language">
         <div class="lang-switch-inner">
@@ -146,48 +339,56 @@
       </div>
     </header>
 
-    <div class="cards">
-      <div class="card">
-        <h3 data-i18n="card1Title">One button</h3>
-        <p data-i18n="card1Body">Press &ldquo;Launch Instance&rdquo; once per Roblox window you want. Every press opens another client.</p>
+    <section>
+      <p class="section-kicker" data-i18n="whyKicker">Why MultiRoblox</p>
+      <h2 class="section-title" data-i18n="whyTitle">Built for many accounts, zero fuss</h2>
+      <p class="section-lead" data-i18n="whyLead">A single portable app holds Roblox’s single-instance lock so every extra window stays open.</p>
+      <div class="features">
+        <div class="feature">
+          <h3 data-i18n="card1Title">One button</h3>
+          <p data-i18n="card1Body">Press Launch Instance once per Roblox window. Every press opens another client.</p>
+        </div>
+        <div class="feature">
+          <h3 data-i18n="card2Title">Live status</h3>
+          <p data-i18n="card2Body">See every running instance with its uptime and stop them all with one click.</p>
+        </div>
+        <div class="feature">
+          <h3 data-i18n="card3Title">Safe &amp; simple</h3>
+          <p data-i18n="card3Body">No files patched, no admin rights. Just a clean lock while MultiRoblox is open.</p>
+        </div>
       </div>
-      <div class="card">
-        <h3 data-i18n="card2Title">Live status</h3>
-        <p data-i18n="card2Body">See every running instance with its uptime and stop them all with a single button.</p>
-      </div>
-      <div class="card">
-        <h3 data-i18n="card3Title">Safe &amp; simple</h3>
-        <p data-i18n="card3Body">No files patched, no admin rights. It just holds Roblox&rsquo;s single-instance lock while open.</p>
-      </div>
-    </div>
+    </section>
 
     <section>
-      <h2 data-i18n="howTitle">How to use</h2>
-      <ol>
+      <p class="section-kicker" data-i18n="howKicker">Get started</p>
+      <h2 class="section-title" data-i18n="howTitle">How to use</h2>
+      <ol class="steps">
         <li data-i18n="how1Html" data-i18n-html>Download <strong>MultiRoblox.exe</strong> and run it.</li>
-        <li data-i18n="how2Html" data-i18n-html>Press <strong>Launch Instance</strong> &mdash; once for every Roblox window you want open.</li>
+        <li data-i18n="how2Html" data-i18n-html>Press <strong>Launch Instance</strong> once for every Roblox window you want.</li>
         <li data-i18n="how3Html" data-i18n-html>Sign into a <strong>different Roblox account</strong> in each window and join a game.</li>
         <li data-i18n="how4Html" data-i18n-html>Keep MultiRoblox open while you play. Use <strong>Stop All</strong> when finished.</li>
       </ol>
     </section>
 
     <section>
-      <h2 data-i18n="psTitle">Optional: install with auto-update</h2>
-      <p data-i18n="psLead">Want Start Menu shortcuts and automatic updates? Run this in PowerShell:</p>
+      <p class="section-kicker" data-i18n="psKicker">Optional</p>
+      <h2 class="section-title" data-i18n="psTitle">Install with auto-update</h2>
+      <p class="section-lead" data-i18n="psLead">Want Start Menu shortcuts and automatic updates? Run this in PowerShell:</p>
       <div class="code-block">powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb https://raw.githubusercontent.com/HyperlinksSpace/MultiRoblox/main/installer/Install-MultiRoblox.ps1 | iex"</div>
     </section>
 
     <section>
-      <h2 data-i18n="reqTitle">Requirements</h2>
-      <ul>
+      <p class="section-kicker" data-i18n="reqKicker">Needs</p>
+      <h2 class="section-title" data-i18n="reqTitle">Requirements</h2>
+      <ul class="reqs">
         <li data-i18n="req1">Windows 10 or 11.</li>
-        <li data-i18n="req2Html" data-i18n-html>The <strong>Roblox player</strong> installed (from roblox.com). Keep MultiRoblox open while playing &mdash; it holds the lock that lets extra instances stay alive.</li>
+        <li data-i18n="req2Html" data-i18n-html>The <strong>Roblox player</strong> installed (from roblox.com). Keep MultiRoblox open while playing.</li>
       </ul>
     </section>
 
     <footer>
       <p data-i18n="footerHtml" data-i18n-html>MultiRoblox is an independent tool and is not affiliated with or endorsed by Roblox Corporation.<br />
-      Source code on <a href="https://github.com/HyperlinksSpace/MultiRoblox">GitHub</a>.</p>
+      Source on <a href="https://github.com/HyperlinksSpace/MultiRoblox">GitHub</a>.</p>
     </footer>
   </div>
 
