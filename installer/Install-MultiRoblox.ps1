@@ -35,6 +35,8 @@ function New-Shortcut([string]$linkPath, [string]$target) {
     $shortcut.TargetPath = $target
     $shortcut.WorkingDirectory = Split-Path -Parent $target
     $shortcut.Description = "Run two Roblox clients at once"
+    # Use the icon embedded in the EXE (index 0) for Start Menu / Desktop / taskbar.
+    $shortcut.IconLocation = "$target,0"
     $shortcut.Save()
 }
 

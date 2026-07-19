@@ -26,11 +26,22 @@ if (-not $csc) {
 }
 
 Write-Host "Using compiler: $csc"
+
+$icon = Join-Path $root "assets\MultiRoblox.ico"
+$iconArgs = @()
+if (Test-Path -LiteralPath $icon) {
+    $iconArgs = @("/win32icon:$icon")
+    Write-Host "Embedding icon: $icon"
+} else {
+    Write-Warning "Icon not found at $icon - building without /win32icon"
+}
+
 & $csc `
     /nologo `
     /target:winexe `
     /optimize+ `
     /out:"$outExe" `
+    @iconArgs `
     /reference:System.dll `
     /reference:System.Core.dll `
     /reference:System.Drawing.dll `

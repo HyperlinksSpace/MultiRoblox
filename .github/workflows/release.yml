@@ -59,7 +59,7 @@ jobs:
           body: |
             Automated release from commit `${{ steps.version.outputs.sha }}` on `main`.
 
-            **Download** `MultiRobloxController.exe` below, run it, then click **Launch 2 Clients**.
+            **Download** the installer (`Install-MultiRoblox.cmd`) for auto-update + Start Menu shortcuts.
           files: |
             dist/MultiRobloxController.exe
             installer/Install-MultiRoblox.ps1

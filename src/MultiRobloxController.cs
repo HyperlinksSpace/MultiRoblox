@@ -40,6 +40,14 @@ internal sealed class ControllerForm : Form
     public ControllerForm()
     {
         Text = "MultiRoblox Controller";
+        try
+        {
+            Icon = System.Drawing.Icon.ExtractAssociatedIcon(
+                System.Windows.Forms.Application.ExecutablePath);
+        }
+        catch
+        {
+        }
         StartPosition = FormStartPosition.CenterScreen;
         ClientSize = new Size(520, 460);
         MinimumSize = new Size(520, 460);
