@@ -756,9 +756,19 @@ internal sealed class ControllerForm : Form
 
 internal static class Program
 {
+    // Groups the window under one pinned Start Menu / taskbar identity so
+    // Windows picks our embedded multi-size icon instead of a generic one.
+    private const string AppUserModelId = "HyperlinksSpace.MultiRoblox";
+
+    [System.Runtime.InteropServices.DllImport("shell32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+    private static extern int SetCurrentProcessExplicitAppUserModelID(string appID);
+
     [STAThread]
     private static void Main()
     {
+        try { SetCurrentProcessExplicitAppUserModelID(AppUserModelId); }
+        catch { }
+
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
         Application.Run(new ControllerForm());

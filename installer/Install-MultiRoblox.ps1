@@ -35,7 +35,8 @@ function New-Shortcut([string]$linkPath, [string]$target) {
     $shortcut.TargetPath = $target
     $shortcut.WorkingDirectory = Split-Path -Parent $target
     $shortcut.Description = "Run as many Roblox instances as you want"
-    # Use the icon embedded in the EXE (index 0) for Start Menu / Desktop / taskbar.
+    # Multi-resolution icon embedded in the EXE (16..256) — Start Menu, Desktop,
+    # and the taskbar each pick the frame that matches their pixel size.
     $shortcut.IconLocation = "$target,0"
     $shortcut.Save()
 }

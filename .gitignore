@@ -7,6 +7,10 @@ package/
 *.log
 guard.ready
 last-test.json
+assets/icon-preview.png
+shot-*.png
+fw-check.ps1
+test-update.ps1
 
 # OS / editor
 Thumbs.db
