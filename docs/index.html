@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MultiRoblox &mdash; Run two Roblox clients at once</title>
+  <meta name="description" content="MultiRoblox lets you run two Roblox clients side by side on one PC. Free, open source, no admin required." />
+  <style>
+    :root {
+      --bg: #181a20;
+      --panel: #22252e;
+      --panel-2: #2a2e39;
+      --accent: #409cff;
+      --accent-2: #6db3ff;
+      --text: #e8eaf0;
+      --muted: #a0a5b2;
+      --good: #78dc82;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: radial-gradient(1200px 600px at 50% -10%, #232838 0%, var(--bg) 60%);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 64px 20px 80px; }
+    header { text-align: center; }
+    .logo {
+      font-size: 56px; font-weight: 800; letter-spacing: -1px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      margin: 0;
+    }
+    .tag { color: var(--muted); font-size: 20px; margin-top: 8px; }
+    .cta { margin: 40px 0 12px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 28px; border-radius: 12px; font-size: 17px; font-weight: 700;
+      text-decoration: none; transition: transform .08s ease, box-shadow .2s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: 0 8px 24px rgba(64,156,255,.35); }
+    .btn-secondary { background: var(--panel-2); color: var(--text); border: 1px solid #3a3f4c; }
+    .hint { text-align: center; color: var(--muted); font-size: 14px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin: 48px 0; }
+    .card { background: var(--panel); border: 1px solid #30343f; border-radius: 14px; padding: 22px; }
+    .card h3 { margin: 0 0 6px; font-size: 17px; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+    section h2 { font-size: 24px; margin-top: 48px; }
+    ol, ul { color: var(--text); }
+    ol li, ul li { margin: 8px 0; }
+    code, .code {
+      background: #10131a; color: #9ec8ff; padding: 3px 8px; border-radius: 6px;
+      font-family: Consolas, monospace; font-size: 13.5px;
+    }
+    .code-block {
+      background: #10131a; border: 1px solid #2a2e39; border-radius: 10px;
+      padding: 16px; overflow-x: auto; color: #9ec8ff;
+      font-family: Consolas, monospace; font-size: 13.5px; white-space: pre;
+    }
+    footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 64px; }
+    footer a { color: var(--accent-2); text-decoration: none; }
+    .badge { display:inline-block; background: var(--panel-2); color: var(--good); border:1px solid #3a3f4c; border-radius: 999px; padding: 4px 12px; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="badge">Free &bull; Open source &bull; No admin needed</span>
+      <h1 class="logo">MultiRoblox</h1>
+      <p class="tag">Run <strong>two Roblox clients</strong> at the same time on one PC.</p>
+
+      <div class="cta">
+        <a class="btn btn-primary" href="https://github.com/anriltine/MultiRoblox/releases/latest/download/MultiRobloxController.exe">
+          &#8681; Download for Windows
+        </a>
+        <a class="btn btn-secondary" href="https://github.com/anriltine/MultiRoblox/releases/latest/download/Install-MultiRoblox.cmd">
+          Installer (auto-update)
+        </a>
+      </div>
+      <p class="hint">Portable <code>.exe</code> &mdash; just run it. Windows 10/11.
+        See the <a href="https://github.com/anriltine/MultiRoblox/releases/latest" style="color:var(--accent-2)">latest release</a>.</p>
+    </header>
+
+    <div class="cards">
+      <div class="card">
+        <h3>One click</h3>
+        <p>Open the app and press &ldquo;Launch 2 Clients&rdquo;. Two Roblox windows open, ready for two accounts.</p>
+      </div>
+      <div class="card">
+        <h3>Live status</h3>
+        <p>See exactly which clients are running and stop them all with a single button.</p>
+      </div>
+      <div class="card">
+        <h3>Safe &amp; simple</h3>
+        <p>No files patched, no admin rights. It just holds Roblox&rsquo;s single-instance lock while open.</p>
+      </div>
+    </div>
+
+    <section>
+      <h2>How to use</h2>
+      <ol>
+        <li>Download and run <strong>MultiRobloxController.exe</strong>.</li>
+        <li>Click <strong>Launch 2 Clients</strong>. The classic player and the Microsoft Store client both open.</li>
+        <li>Sign into a <strong>different Roblox account</strong> in each window and join a game.</li>
+        <li>Keep the controller window open while you play. Use <strong>Stop All Clients</strong> when finished.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Install from PowerShell</h2>
+      <p>Prefer a command line? This downloads the latest release and adds shortcuts:</p>
+      <div class="code-block">powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb https://raw.githubusercontent.com/anriltine/MultiRoblox/main/installer/Install-MultiRoblox.ps1 | iex"</div>
+    </section>
+
+    <section>
+      <h2>Requirements</h2>
+      <ul>
+        <li>Windows 10 or 11.</li>
+        <li>The <strong>classic Roblox player</strong> (from roblox.com) <em>and</em> the <strong>Microsoft Store Roblox app</strong> both installed &mdash; this pairing is what allows two clients to stay open.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>MultiRoblox is an independent tool and is not affiliated with or endorsed by Roblox Corporation.<br />
+      Source code on <a href="https://github.com/anriltine/MultiRoblox">GitHub</a>.</p>
+    </footer>
+  </div>
+</body>
+</html>
