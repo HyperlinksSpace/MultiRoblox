@@ -5,6 +5,8 @@ accounts can play together from one machine.
 
 **Org:** [HyperlinksSpace](https://github.com/HyperlinksSpace) · **Site:** https://hyperlinksspace.github.io/MultiRoblox/
 
+Site languages: **EN** · **РУ** · **中文** (switcher at the bottom of the first screen; follows browser language by default).
+
 ## How it works
 
 Roblox normally allows only one client per computer by holding two named

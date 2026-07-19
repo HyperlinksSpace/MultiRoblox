@@ -26,7 +26,7 @@
       min-height: 100vh;
     }
     .wrap { max-width: 860px; margin: 0 auto; padding: 64px 20px 80px; }
-    header { text-align: center; }
+    header { text-align: center; position: relative; padding-bottom: 72px; }
     .logo {
       font-size: 56px; font-weight: 800; letter-spacing: -1px;
       background: linear-gradient(90deg, var(--accent), var(--accent-2));
@@ -44,6 +44,7 @@
     .btn-primary { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: 0 8px 24px rgba(64,156,255,.35); }
     .btn-secondary { background: var(--panel-2); color: var(--text); border: 1px solid #3a3f4c; }
     .hint { text-align: center; color: var(--muted); font-size: 14px; }
+    .hint a { color: var(--accent-2); text-decoration: none; }
     .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin: 48px 0; }
     .card { background: var(--panel); border: 1px solid #30343f; border-radius: 14px; padding: 22px; }
     .card h3 { margin: 0 0 6px; font-size: 17px; }
@@ -63,70 +64,138 @@
     footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 64px; }
     footer a { color: var(--accent-2); text-decoration: none; }
     .badge { display:inline-block; background: var(--panel-2); color: var(--good); border:1px solid #3a3f4c; border-radius: 999px; padding: 4px 12px; font-size: 13px; }
+
+    /* Language switcher — same UX as AbraKadaVra, MultiRoblox colors */
+    .lang-switch {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 1rem;
+      pointer-events: none;
+    }
+    .lang-switch-inner {
+      display: grid;
+      grid-template-columns: repeat(3, 4.75rem);
+      margin: 0 auto;
+      padding: 0.3rem;
+      background: rgba(16, 18, 24, 0.72);
+      border: 1px solid #3a3f4c;
+      border-radius: 12px;
+      backdrop-filter: blur(8px);
+      pointer-events: auto;
+    }
+    .lang-switch button {
+      appearance: none;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.55rem 0.35rem;
+      width: 100%;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: color .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .lang-switch button:hover {
+      color: var(--text);
+      border-color: rgba(64, 156, 255, 0.45);
+    }
+    .lang-switch button.is-active {
+      color: #fff;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+    }
+    .lang-switch button:focus-visible {
+      outline: 2px solid var(--accent-2);
+      outline-offset: 2px;
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <span class="badge">Free &bull; Open source &bull; No admin needed</span>
+      <span class="badge" data-i18n="badge">Free &bull; Open source &bull; No admin needed</span>
       <h1 class="logo">MultiRoblox</h1>
-      <p class="tag">Run <strong>two Roblox clients</strong> at the same time on one PC.</p>
+      <p class="tag" data-i18n="tagHtml" data-i18n-html>Run <strong>two Roblox clients</strong> at the same time on one PC.</p>
 
       <div class="cta">
-        <a class="btn btn-primary" href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest/download/MultiRobloxController.exe">
+        <a class="btn btn-primary" data-i18n="download" href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest/download/MultiRobloxController.exe">
           &#8681; Download for Windows
         </a>
-        <a class="btn btn-secondary" href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest/download/Install-MultiRoblox.cmd">
+        <a class="btn btn-secondary" data-i18n="installer" href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest/download/Install-MultiRoblox.cmd">
           Installer (auto-update)
         </a>
       </div>
-      <p class="hint">Portable <code>.exe</code> &mdash; just run it. Windows 10/11.
-        See the <a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest" style="color:var(--accent-2)">latest release</a>.</p>
+      <p class="hint" data-i18n="hintHtml" data-i18n-html>Portable <code>.exe</code> &mdash; just run it. Windows 10/11.
+        See the <a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">latest release</a>.</p>
+
+      <div class="lang-switch" role="group" aria-label="Language">
+        <div class="lang-switch-inner">
+          <button type="button" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-lang="ru" aria-pressed="false">РУ</button>
+          <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+        </div>
+      </div>
     </header>
 
     <div class="cards">
       <div class="card">
-        <h3>One click</h3>
-        <p>Open the app and press &ldquo;Launch 2 Clients&rdquo;. Two Roblox windows open, ready for two accounts.</p>
+        <h3 data-i18n="card1Title">One click</h3>
+        <p data-i18n="card1Body">Open the app and press &ldquo;Launch 2 Clients&rdquo;. Two Roblox windows open, ready for two accounts.</p>
       </div>
       <div class="card">
-        <h3>Live status</h3>
-        <p>See exactly which clients are running and stop them all with a single button.</p>
+        <h3 data-i18n="card2Title">Live status</h3>
+        <p data-i18n="card2Body">See exactly which clients are running and stop them all with a single button.</p>
       </div>
       <div class="card">
-        <h3>Safe &amp; simple</h3>
-        <p>No files patched, no admin rights. It just holds Roblox&rsquo;s single-instance lock while open.</p>
+        <h3 data-i18n="card3Title">Safe &amp; simple</h3>
+        <p data-i18n="card3Body">No files patched, no admin rights. It just holds Roblox&rsquo;s single-instance lock while open.</p>
       </div>
     </div>
 
     <section>
-      <h2>How to use</h2>
+      <h2 data-i18n="howTitle">How to use</h2>
       <ol>
-        <li>Download and run <strong>MultiRobloxController.exe</strong>.</li>
-        <li>Click <strong>Launch 2 Clients</strong>. The classic player and the Microsoft Store client both open.</li>
-        <li>Sign into a <strong>different Roblox account</strong> in each window and join a game.</li>
-        <li>Keep the controller window open while you play. Use <strong>Stop All Clients</strong> when finished.</li>
+        <li data-i18n="how1Html" data-i18n-html>Download and run <strong>MultiRobloxController.exe</strong>.</li>
+        <li data-i18n="how2Html" data-i18n-html>Click <strong>Launch 2 Clients</strong>. The classic player and the Microsoft Store client both open.</li>
+        <li data-i18n="how3Html" data-i18n-html>Sign into a <strong>different Roblox account</strong> in each window and join a game.</li>
+        <li data-i18n="how4Html" data-i18n-html>Keep the controller window open while you play. Use <strong>Stop All Clients</strong> when finished.</li>
       </ol>
     </section>
 
     <section>
-      <h2>Install from PowerShell</h2>
-      <p>Prefer a command line? This downloads the latest release and adds shortcuts:</p>
+      <h2 data-i18n="psTitle">Install from PowerShell</h2>
+      <p data-i18n="psLead">Prefer a command line? This downloads the latest release and adds shortcuts:</p>
       <div class="code-block">powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb https://raw.githubusercontent.com/HyperlinksSpace/MultiRoblox/main/installer/Install-MultiRoblox.ps1 | iex"</div>
     </section>
 
     <section>
-      <h2>Requirements</h2>
+      <h2 data-i18n="reqTitle">Requirements</h2>
       <ul>
-        <li>Windows 10 or 11.</li>
-        <li>The <strong>classic Roblox player</strong> (from roblox.com) <em>and</em> the <strong>Microsoft Store Roblox app</strong> both installed &mdash; this pairing is what allows two clients to stay open.</li>
+        <li data-i18n="req1">Windows 10 or 11.</li>
+        <li data-i18n="req2Html" data-i18n-html>The <strong>classic Roblox player</strong> (from roblox.com) <em>and</em> the <strong>Microsoft Store Roblox app</strong> both installed &mdash; this pairing is what allows two clients to stay open.</li>
       </ul>
     </section>
 
     <footer>
-      <p>MultiRoblox is an independent tool and is not affiliated with or endorsed by Roblox Corporation.<br />
+      <p data-i18n="footerHtml" data-i18n-html>MultiRoblox is an independent tool and is not affiliated with or endorsed by Roblox Corporation.<br />
       Source code on <a href="https://github.com/HyperlinksSpace/MultiRoblox">GitHub</a>.</p>
     </footer>
   </div>
+
+  <script type="module">
+    import { initI18n } from "./js/i18n.js";
+    initI18n();
+  </script>
 </body>
 </html>
