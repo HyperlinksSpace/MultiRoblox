@@ -14,7 +14,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$Repo = "anriltine/MultiRoblox"
+$Repo = "HyperlinksSpace/MultiRoblox"
 $AppName = "MultiRoblox"
 $ExeName = "MultiRobloxController.exe"
 

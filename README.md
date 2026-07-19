@@ -3,7 +3,7 @@
 Run **two Roblox clients at the same time** on a single Windows PC, so two
 accounts can play together from one machine.
 
-Website & downloads: **https://anriltine.github.io/MultiRoblox/**
+**Org:** [HyperlinksSpace](https://github.com/HyperlinksSpace) · **Site:** https://hyperlinksspace.github.io/MultiRoblox/
 
 ## How it works
 
@@ -19,13 +19,13 @@ of each.
 
 ## Download
 
-- **Portable app:** [MultiRobloxController.exe](https://github.com/anriltine/MultiRoblox/releases/latest/download/MultiRobloxController.exe) &mdash; just run it.
-- **Installer (auto-update + shortcuts):** [Install-MultiRoblox.cmd](https://github.com/anriltine/MultiRoblox/releases/latest/download/Install-MultiRoblox.cmd)
+- **Portable app:** [MultiRobloxController.exe](https://github.com/HyperlinksSpace/MultiRoblox/releases/latest/download/MultiRobloxController.exe) — just run it.
+- **Installer (auto-update + shortcuts):** [Install-MultiRoblox.cmd](https://github.com/HyperlinksSpace/MultiRoblox/releases/latest/download/Install-MultiRoblox.cmd)
 
 Or from PowerShell:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb https://raw.githubusercontent.com/anriltine/MultiRoblox/main/installer/Install-MultiRoblox.ps1 | iex"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb https://raw.githubusercontent.com/HyperlinksSpace/MultiRoblox/main/installer/Install-MultiRoblox.ps1 | iex"
 ```
 
 ## Usage
@@ -51,10 +51,13 @@ required.
 
 ## Releases & CI
 
-- `.github/workflows/release.yml` builds the controller and publishes a
-  GitHub Release whenever a `v*` tag is pushed (or via manual dispatch).
-- The website is served by GitHub Pages directly from the `docs/` folder on
-  `main`, so it updates automatically on every push.
+Every push to `main` triggers `.github/workflows/release.yml`, which:
+
+1. Builds `MultiRobloxController.exe`
+2. Packages the installer scripts + zip
+3. Publishes a new GitHub Release (`v1.<run>.0`) with those assets
+
+The download site is served by GitHub Pages from the `docs/` folder on `main`.
 
 ## Disclaimer
 

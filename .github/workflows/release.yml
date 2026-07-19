@@ -2,17 +2,16 @@ name: Build and Release
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - main
   workflow_dispatch:
-    inputs:
-      tag:
-        description: "Release tag to create (e.g. v1.0.1)"
-        required: true
-        default: "v1.0.0"
 
 permissions:
   contents: write
+
+concurrency:
+  group: release-main
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -20,6 +19,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Build controller
         shell: pwsh
@@ -35,23 +36,30 @@ jobs:
           Copy-Item README.md package/README.txt
           Compress-Archive -Path package/* -DestinationPath MultiRoblox.zip -Force
 
-      - name: Resolve tag
-        id: tag
+      - name: Compute next version
+        id: version
         shell: pwsh
         run: |
-          if ("${{ github.ref_type }}" -eq "tag") {
-            $tag = "${{ github.ref_name }}"
-          } else {
-            $tag = "${{ github.event.inputs.tag }}"
-          }
+          # Auto-version every main commit: v1.<run_number>.0
+          # (stable, monotonically increasing, no manual tagging needed)
+          $run = "${{ github.run_number }}"
+          $tag = "v1.$run.0"
+          $sha = "${{ github.sha }}".Substring(0, 7)
           "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "sha=$sha" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          Write-Host "Release tag: $tag (commit $sha)"
 
-      - name: Create / update release
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.tag.outputs.tag }}
-          name: MultiRoblox ${{ steps.tag.outputs.tag }}
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: MultiRoblox ${{ steps.version.outputs.tag }}
+          target_commitish: ${{ github.sha }}
           generate_release_notes: true
+          body: |
+            Automated release from commit `${{ steps.version.outputs.sha }}` on `main`.
+
+            **Download** `MultiRobloxController.exe` below, run it, then click **Launch 2 Clients**.
           files: |
             dist/MultiRobloxController.exe
             installer/Install-MultiRoblox.ps1
