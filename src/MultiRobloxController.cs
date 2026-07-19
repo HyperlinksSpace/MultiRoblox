@@ -6,6 +6,7 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 // MultiRoblox Controller
 // One window, one button. Each press launches another Roblox client, so you
@@ -17,6 +18,7 @@ internal sealed class ControllerForm : Form
     private Mutex _singletonMutex;
     private Mutex _singletonEventBlocker;
     private bool _guardActive;
+    private int _launchCount;
 
     private readonly Label _countLabel = new Label();
     private readonly Label _guardLabel = new Label();
@@ -153,7 +155,8 @@ internal sealed class ControllerForm : Form
     {
         AcquireGuard();
         RefreshStatus();
-        AppendLog("Ready. Press Launch Instance once per Roblox window you want.");
+        AppendLog("Ready. Your first window uses your saved account.");
+        AppendLog("Every extra window opens at the login screen for another account.");
     }
 
     private void OnTopMostChanged(object sender, EventArgs e)
@@ -200,44 +203,160 @@ internal sealed class ControllerForm : Form
             AcquireGuard();
         }
 
-        int before = CountPlayers();
-        _launchButton.Enabled = false;
-        try
-        {
-            LaunchOneInstance();
-        }
-        finally
-        {
-            _launchButton.Enabled = true;
-            RefreshStatus();
-        }
+        // The very first window keeps your saved login. Every window after
+        // that opens at the Roblox login screen so you can sign into a
+        // different account, without disturbing the accounts already open.
+        bool freshLogin = _launchCount >= 1 || CountPlayers() >= 1;
+        _launchCount++;
 
-        AppendLog("Launch #" + (before + 1)
-            + " requested. Sign into a different account in the new window.");
+        _launchButton.Enabled = false;
+        _launchButton.Text = "Launching...";
+
+        // Run on a worker thread: the logged-out launch briefly waits while
+        // the new client reads its files, and we don't want to freeze the UI.
+        Thread worker = new Thread(delegate ()
+        {
+            try
+            {
+                LaunchOneInstance(freshLogin);
+            }
+            finally
+            {
+                BeginInvoke((MethodInvoker)delegate
+                {
+                    _launchButton.Enabled = true;
+                    _launchButton.Text = "Launch Instance";
+                    RefreshStatus();
+                });
+            }
+        });
+        worker.IsBackground = true;
+        worker.SetApartmentState(ApartmentState.STA);
+        worker.Start();
     }
 
     // Each press starts one more Roblox player. Prefer the classic desktop
     // player; fall back to the Microsoft Store client if that's all that's
-    // installed.
-    private void LaunchOneInstance()
+    // installed. When freshLogin is true the new window starts logged out.
+    private void LaunchOneInstance(bool freshLogin)
     {
         string player = FindClassicPlayer();
-        if (player != null)
+        if (player == null)
         {
+            LaunchStoreFallback();
+            return;
+        }
+
+        // Roblox reads RobloxCookies.dat at startup. If we hide it before
+        // launching, the new window comes up at the login screen while the
+        // clients already running keep their sessions in memory. We keep the
+        // file hidden until the new window has actually reached its login
+        // screen, then put it back so your saved account still works next time.
+        string cookie = Path.Combine(
+            Environment.GetFolderPath(
+                Environment.SpecialFolder.LocalApplicationData),
+            "Roblox\\LocalStorage\\RobloxCookies.dat");
+        string held = cookie + ".mrhold";
+        bool moved = false;
+
+        var existing = new System.Collections.Generic.HashSet<int>();
+        foreach (Process p in Process.GetProcessesByName("RobloxPlayerBeta"))
+            existing.Add(p.Id);
+
+        try
+        {
+            if (freshLogin && File.Exists(cookie))
+            {
+                try
+                {
+                    if (File.Exists(held)) File.Delete(held);
+                    File.Move(cookie, held);
+                    moved = true;
+                }
+                catch (Exception ex)
+                {
+                    AppendLog("Could not open a logged-out window ("
+                        + ex.Message + "). Opening normally instead.");
+                }
+            }
+
             try
             {
                 ProcessStartInfo info = new ProcessStartInfo(player, "-app");
                 info.UseShellExecute = true;
                 Process.Start(info);
-                AppendLog("Started a Roblox client.");
-                return;
+                AppendLog(freshLogin
+                    ? "Opening a new window at the login screen..."
+                    : "Opened your Roblox window (saved account).");
             }
             catch (Exception ex)
             {
                 AppendLog("Classic launch failed: " + ex.Message);
+                LaunchStoreFallback();
+            }
+
+            // Wait until the brand-new client shows a window (it has reached
+            // the login screen by then). Only after that do we restore the
+            // cookie, so the new instance can't pick the old session back up.
+            if (moved)
+            {
+                if (WaitForNewWindow(existing, 60))
+                    AppendLog("Login screen ready. Sign into another account.");
+                else
+                    AppendLog("New window is taking a while; sign in when it "
+                        + "appears.");
+                // Small extra margin past the auth read.
+                System.Threading.Thread.Sleep(3000);
             }
         }
+        finally
+        {
+            if (moved)
+            {
+                try
+                {
+                    if (File.Exists(cookie)) File.Delete(cookie);
+                    File.Move(held, cookie);
+                }
+                catch (Exception ex)
+                {
+                    AppendLog("Warning: could not restore your saved login file ("
+                        + ex.Message + "). It is safe at " + held);
+                }
+            }
+        }
+    }
 
+    // Polls for a RobloxPlayerBeta process that didn't exist before the launch
+    // and now has a visible main window. Returns true once found.
+    private static bool WaitForNewWindow(
+        System.Collections.Generic.HashSet<int> existing, int timeoutSeconds)
+    {
+        DateTime deadline = DateTime.Now.AddSeconds(timeoutSeconds);
+        while (DateTime.Now < deadline)
+        {
+            foreach (Process p in Process.GetProcessesByName("RobloxPlayerBeta"))
+            {
+                if (existing.Contains(p.Id))
+                    continue;
+                try
+                {
+                    p.Refresh();
+                    if (p.MainWindowHandle != IntPtr.Zero
+                        && !string.IsNullOrEmpty(p.MainWindowTitle))
+                        return true;
+                }
+                catch
+                {
+                }
+            }
+            System.Threading.Thread.Sleep(1000);
+        }
+        return false;
+    }
+
+    private void LaunchStoreFallback()
+    {
         try
         {
             const string storeAppId =
@@ -383,6 +502,11 @@ internal sealed class ControllerForm : Form
 
     private void AppendLog(string message)
     {
+        if (_log.InvokeRequired)
+        {
+            _log.BeginInvoke((MethodInvoker)delegate { AppendLog(message); });
+            return;
+        }
         string line = DateTime.Now.ToString("HH:mm:ss") + "  " + message;
         if (_log.TextLength > 0)
             _log.AppendText(Environment.NewLine);
