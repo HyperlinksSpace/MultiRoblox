@@ -21,8 +21,7 @@ of each.
 
 ## Download
 
-- **Portable app:** [MultiRobloxController.exe](https://github.com/HyperlinksSpace/MultiRoblox/releases/latest/download/MultiRobloxController.exe) — just run it.
-- **Installer (auto-update + shortcuts):** [Install-MultiRoblox.cmd](https://github.com/HyperlinksSpace/MultiRoblox/releases/latest/download/Install-MultiRoblox.cmd)
+**[Install-MultiRoblox.cmd](https://github.com/HyperlinksSpace/MultiRoblox/releases/latest/download/Install-MultiRoblox.cmd)** — installs MultiRoblox with Desktop/Start Menu shortcuts and pulls the latest release (auto-update).
 
 Or from PowerShell:
 
@@ -32,7 +31,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb https://raw.gi
 
 ## Usage
 
-1. Run **MultiRobloxController.exe**.
+1. Run the **installer** (`Install-MultiRoblox.cmd`), then open MultiRoblox from the Desktop or Start Menu.
 2. Click **Launch 2 Clients**.
 3. Sign into a different Roblox account in each window.
 4. Keep the controller open while playing. Click **Stop All Clients** to close them.

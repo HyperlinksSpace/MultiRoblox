@@ -15,9 +15,8 @@ const dict = {
     tagHtml:
       'Run <strong>two Roblox clients</strong> at the same time on one PC.',
     download: "↓ Download for Windows",
-    installer: "Installer (auto-update)",
     hintHtml:
-      'Portable <code>.exe</code> — just run it. Windows 10/11. See the <a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">latest release</a>.',
+      'One installer with auto-update and shortcuts. Windows 10/11. See the <a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">latest release</a>.',
     card1Title: "One click",
     card1Body:
       'Open the app and press “Launch 2 Clients”. Two Roblox windows open, ready for two accounts.',
@@ -28,7 +27,8 @@ const dict = {
     card3Body:
       "No files patched, no admin rights. It just holds Roblox’s single-instance lock while open.",
     howTitle: "How to use",
-    how1Html: "Download and run <strong>MultiRobloxController.exe</strong>.",
+    how1Html:
+      "Download and run the <strong>installer</strong> — it installs MultiRoblox and keeps it up to date.",
     how2Html:
       "Click <strong>Launch 2 Clients</strong>. The classic player and the Microsoft Store client both open.",
     how3Html:
@@ -53,9 +53,8 @@ const dict = {
     tagHtml:
       'Запускайте <strong>два клиента Roblox</strong> одновременно на одном ПК.',
     download: "↓ Скачать для Windows",
-    installer: "Установщик (автообновление)",
     hintHtml:
-      'Портативный <code>.exe</code> — просто запустите. Windows 10/11. Смотрите <a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">последний релиз</a>.',
+      'Один установщик с автообновлением и ярлыками. Windows 10/11. Смотрите <a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">последний релиз</a>.',
     card1Title: "В один клик",
     card1Body:
       'Откройте приложение и нажмите «Launch 2 Clients». Откроются два окна Roblox — для двух аккаунтов.',
@@ -66,7 +65,8 @@ const dict = {
     card3Body:
       "Никаких патчей файлов и прав администратора. Приложение лишь удерживает блокировку одного экземпляра Roblox, пока оно открыто.",
     howTitle: "Как пользоваться",
-    how1Html: "Скачайте и запустите <strong>MultiRobloxController.exe</strong>.",
+    how1Html:
+      "Скачайте и запустите <strong>установщик</strong> — он поставит MultiRoblox и будет обновлять его.",
     how2Html:
       "Нажмите <strong>Launch 2 Clients</strong>. Откроются классический плеер и клиент из Microsoft Store.",
     how3Html:
@@ -90,9 +90,8 @@ const dict = {
     badge: "免费 · 开源 · 无需管理员",
     tagHtml: "在一台电脑上同时运行<strong>两个 Roblox 客户端</strong>。",
     download: "↓ 下载 Windows 版",
-    installer: "安装程序（自动更新）",
     hintHtml:
-      '便携 <code>.exe</code> — 直接运行。支持 Windows 10/11。查看<a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">最新版本</a>。',
+      '一键安装程序，含自动更新与快捷方式。支持 Windows 10/11。查看<a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">最新版本</a>。',
     card1Title: "一键启动",
     card1Body:
       "打开应用并点击 “Launch 2 Clients”。会打开两个 Roblox 窗口，可登录两个账号。",
@@ -102,7 +101,8 @@ const dict = {
     card3Body:
       "不修改游戏文件，不需要管理员权限。只是在窗口打开时占用 Roblox 的单实例锁。",
     howTitle: "使用方法",
-    how1Html: "下载并运行 <strong>MultiRobloxController.exe</strong>。",
+    how1Html:
+      "下载并运行<strong>安装程序</strong>——它会安装 MultiRoblox 并保持更新。",
     how2Html:
       "点击 <strong>Launch 2 Clients</strong>。经典客户端与 Microsoft Store 客户端都会打开。",
     how3Html:
