@@ -34,7 +34,7 @@ function New-Shortcut([string]$linkPath, [string]$target) {
     $shortcut = $shell.CreateShortcut($linkPath)
     $shortcut.TargetPath = $target
     $shortcut.WorkingDirectory = Split-Path -Parent $target
-    $shortcut.Description = "Run two Roblox clients at once"
+    $shortcut.Description = "Run as many Roblox instances as you want"
     # Use the icon embedded in the EXE (index 0) for Start Menu / Desktop / taskbar.
     $shortcut.IconLocation = "$target,0"
     $shortcut.Save()
@@ -77,7 +77,7 @@ Write-Host "Start Menu and Desktop shortcuts created."
 
 Write-Host ""
 Write-Host "$AppName installed successfully!" -ForegroundColor Green
-Write-Host "Launch it from the Desktop or Start Menu, then click 'Launch 2 Clients'."
+Write-Host "Launch it from the Desktop or Start Menu, then press 'Launch Instance' once per Roblox window you want."
 
 if (-not $NoShortcutLaunch) {
     Start-Process -FilePath $exePath

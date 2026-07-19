@@ -35,6 +35,8 @@ jobs:
           Copy-Item installer/Install-MultiRoblox.cmd package/
           Copy-Item README.md package/README.txt
           Compress-Archive -Path package/* -DestinationPath MultiRoblox.zip -Force
+          # Friendly asset name for the website's direct download button
+          Copy-Item dist/MultiRobloxController.exe MultiRoblox.exe
 
       - name: Compute next version
         id: version
@@ -59,8 +61,10 @@ jobs:
           body: |
             Automated release from commit `${{ steps.version.outputs.sha }}` on `main`.
 
-            **Download** the installer (`Install-MultiRoblox.cmd`) for auto-update + Start Menu shortcuts.
+            **Download `MultiRoblox.exe`** and run it — one button, unlimited Roblox instances.
+            Prefer Start Menu shortcuts + auto-update? Use `Install-MultiRoblox.cmd` instead.
           files: |
+            MultiRoblox.exe
             dist/MultiRobloxController.exe
             installer/Install-MultiRoblox.ps1
             installer/Install-MultiRoblox.cmd

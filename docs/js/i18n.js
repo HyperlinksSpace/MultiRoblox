@@ -8,113 +8,112 @@ export const LANGS = [
 
 const dict = {
   en: {
-    docTitle: "MultiRoblox — Run two Roblox clients at once",
+    docTitle: "MultiRoblox — Run as many Roblox instances as you want",
     docDesc:
-      "MultiRoblox lets you run two Roblox clients side by side on one PC. Free, open source, no admin required.",
+      "MultiRoblox lets you run unlimited Roblox instances on one PC. One button per instance. Free, open source, no admin required.",
     badge: "Free · Open source · No admin needed",
     tagHtml:
-      'Run <strong>two Roblox clients</strong> at the same time on one PC.',
-    download: "↓ Download for Windows",
+      'Run <strong>as many Roblox instances</strong> as you want on one PC.',
+    download: "↓ Download MultiRoblox.exe",
     hintHtml:
-      'One installer with auto-update and shortcuts. Windows 10/11. See the <a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">latest release</a>.',
-    card1Title: "One click",
+      'A single .exe — no install needed. Windows 10/11. See the <a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">latest release</a>.',
+    card1Title: "One button",
     card1Body:
-      'Open the app and press “Launch 2 Clients”. Two Roblox windows open, ready for two accounts.',
+      'Press “Launch Instance” once per Roblox window you want. Every press opens another client.',
     card2Title: "Live status",
     card2Body:
-      "See exactly which clients are running and stop them all with a single button.",
+      "See every running instance with its uptime and stop them all with a single button.",
     card3Title: "Safe & simple",
     card3Body:
       "No files patched, no admin rights. It just holds Roblox’s single-instance lock while open.",
     howTitle: "How to use",
     how1Html:
-      "Download and run the <strong>installer</strong> — it installs MultiRoblox and keeps it up to date.",
+      "Download <strong>MultiRoblox.exe</strong> and run it.",
     how2Html:
-      "Click <strong>Launch 2 Clients</strong>. The classic player and the Microsoft Store client both open.",
+      "Press <strong>Launch Instance</strong> — once for every Roblox window you want open.",
     how3Html:
       "Sign into a <strong>different Roblox account</strong> in each window and join a game.",
     how4Html:
-      "Keep the controller window open while you play. Use <strong>Stop All Clients</strong> when finished.",
-    psTitle: "Install from PowerShell",
+      "Keep MultiRoblox open while you play. Use <strong>Stop All</strong> when finished.",
+    psTitle: "Optional: install with auto-update",
     psLead:
-      "Prefer a command line? This downloads the latest release and adds shortcuts:",
+      "Want Start Menu shortcuts and automatic updates? Run this in PowerShell:",
     reqTitle: "Requirements",
     req1: "Windows 10 or 11.",
     req2Html:
-      'The <strong>classic Roblox player</strong> (from roblox.com) <em>and</em> the <strong>Microsoft Store Roblox app</strong> both installed — this pairing is what allows two clients to stay open.',
+      'The <strong>Roblox player</strong> installed (from roblox.com). Keep MultiRoblox open while playing — it holds the lock that lets extra instances stay alive.',
     footerHtml:
       'MultiRoblox is an independent tool and is not affiliated with or endorsed by Roblox Corporation.<br />Source code on <a href="https://github.com/HyperlinksSpace/MultiRoblox">GitHub</a>.',
   },
   ru: {
-    docTitle: "MultiRoblox — два клиента Roblox одновременно",
+    docTitle: "MultiRoblox — сколько угодно окон Roblox одновременно",
     docDesc:
-      "MultiRoblox позволяет запускать два клиента Roblox на одном ПК. Бесплатно, с открытым кодом, без прав администратора.",
+      "MultiRoblox позволяет запускать неограниченное число окон Roblox на одном ПК. Одна кнопка — одно окно. Бесплатно, с открытым кодом, без прав администратора.",
     badge: "Бесплатно · Open source · Без прав админа",
     tagHtml:
-      'Запускайте <strong>два клиента Roblox</strong> одновременно на одном ПК.',
-    download: "↓ Скачать для Windows",
+      'Запускайте <strong>сколько угодно окон Roblox</strong> на одном ПК.',
+    download: "↓ Скачать MultiRoblox.exe",
     hintHtml:
-      'Один установщик с автообновлением и ярлыками. Windows 10/11. Смотрите <a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">последний релиз</a>.',
-    card1Title: "В один клик",
+      'Один .exe — установка не нужна. Windows 10/11. Смотрите <a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">последний релиз</a>.',
+    card1Title: "Одна кнопка",
     card1Body:
-      'Откройте приложение и нажмите «Launch 2 Clients». Откроются два окна Roblox — для двух аккаунтов.',
+      'Нажимайте «Launch Instance» — по одному разу на каждое нужное окно Roblox. Каждое нажатие открывает ещё один клиент.',
     card2Title: "Живой статус",
     card2Body:
-      "Видно, какие клиенты запущены, и можно остановить все одной кнопкой.",
+      "Видно каждый запущенный клиент и время его работы; остановить все можно одной кнопкой.",
     card3Title: "Безопасно и просто",
     card3Body:
       "Никаких патчей файлов и прав администратора. Приложение лишь удерживает блокировку одного экземпляра Roblox, пока оно открыто.",
     howTitle: "Как пользоваться",
     how1Html:
-      "Скачайте и запустите <strong>установщик</strong> — он поставит MultiRoblox и будет обновлять его.",
+      "Скачайте <strong>MultiRoblox.exe</strong> и запустите его.",
     how2Html:
-      "Нажмите <strong>Launch 2 Clients</strong>. Откроются классический плеер и клиент из Microsoft Store.",
+      "Нажимайте <strong>Launch Instance</strong> — по одному разу на каждое нужное окно Roblox.",
     how3Html:
       "Войдите в <strong>разные аккаунты Roblox</strong> в каждом окне и зайдите в игру.",
     how4Html:
-      "Держите окно контроллера открытым во время игры. Нажмите <strong>Stop All Clients</strong>, когда закончите.",
-    psTitle: "Установка через PowerShell",
+      "Держите MultiRoblox открытым во время игры. Нажмите <strong>Stop All</strong>, когда закончите.",
+    psTitle: "Дополнительно: установка с автообновлением",
     psLead:
-      "Предпочитаете командную строку? Эта команда скачает последний релиз и создаст ярлыки:",
+      "Нужны ярлыки в меню «Пуск» и автообновление? Выполните в PowerShell:",
     reqTitle: "Требования",
     req1: "Windows 10 или 11.",
     req2Html:
-      'Установлены и <strong>классический Roblox Player</strong> (с roblox.com), <em>и</em> <strong>приложение Roblox из Microsoft Store</strong> — именно эта пара позволяет держать два клиента открытыми.',
+      'Установленный <strong>Roblox Player</strong> (с roblox.com). Держите MultiRoblox открытым во время игры — он удерживает блокировку, благодаря которой дополнительные окна не закрываются.',
     footerHtml:
       'MultiRoblox — независимый инструмент и не связан с Roblox Corporation и не одобрен ею.<br />Исходный код на <a href="https://github.com/HyperlinksSpace/MultiRoblox">GitHub</a>.',
   },
   zh: {
-    docTitle: "MultiRoblox — 同时运行两个 Roblox 客户端",
+    docTitle: "MultiRoblox — 想开多少个 Roblox 就开多少个",
     docDesc:
-      "MultiRoblox 可在一台电脑上并排运行两个 Roblox 客户端。免费、开源、无需管理员权限。",
+      "MultiRoblox 可在一台电脑上运行任意数量的 Roblox 实例。一键一个窗口。免费、开源、无需管理员权限。",
     badge: "免费 · 开源 · 无需管理员",
-    tagHtml: "在一台电脑上同时运行<strong>两个 Roblox 客户端</strong>。",
-    download: "↓ 下载 Windows 版",
+    tagHtml: "在一台电脑上运行<strong>任意数量的 Roblox 实例</strong>。",
+    download: "↓ 下载 MultiRoblox.exe",
     hintHtml:
-      '一键安装程序，含自动更新与快捷方式。支持 Windows 10/11。查看<a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">最新版本</a>。',
-    card1Title: "一键启动",
+      '单个 .exe 文件——无需安装。支持 Windows 10/11。查看<a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">最新版本</a>。',
+    card1Title: "一个按钮",
     card1Body:
-      "打开应用并点击 “Launch 2 Clients”。会打开两个 Roblox 窗口，可登录两个账号。",
+      "想开几个 Roblox 窗口，就按几次 “Launch Instance”。每按一次就多开一个客户端。",
     card2Title: "实时状态",
-    card2Body: "清楚查看正在运行的客户端，并用一个按钮全部停止。",
+    card2Body: "查看每个正在运行的实例及其运行时间，并用一个按钮全部停止。",
     card3Title: "安全简单",
     card3Body:
       "不修改游戏文件，不需要管理员权限。只是在窗口打开时占用 Roblox 的单实例锁。",
     howTitle: "使用方法",
-    how1Html:
-      "下载并运行<strong>安装程序</strong>——它会安装 MultiRoblox 并保持更新。",
+    how1Html: "下载 <strong>MultiRoblox.exe</strong> 并运行。",
     how2Html:
-      "点击 <strong>Launch 2 Clients</strong>。经典客户端与 Microsoft Store 客户端都会打开。",
+      "按 <strong>Launch Instance</strong>——想开几个 Roblox 窗口就按几次。",
     how3Html:
       "在每个窗口登录<strong>不同的 Roblox 账号</strong>并进入游戏。",
     how4Html:
-      "游玩时保持控制器窗口打开。结束后使用 <strong>Stop All Clients</strong>。",
-    psTitle: "通过 PowerShell 安装",
-    psLead: "更喜欢命令行？这条命令会下载最新版本并创建快捷方式：",
+      "游玩时保持 MultiRoblox 打开。结束后使用 <strong>Stop All</strong>。",
+    psTitle: "可选：带自动更新的安装方式",
+    psLead: "想要开始菜单快捷方式和自动更新？在 PowerShell 中运行：",
     reqTitle: "系统要求",
     req1: "Windows 10 或 11。",
     req2Html:
-      '需同时安装<strong>经典 Roblox 客户端</strong>（来自 roblox.com）<em>以及</em><strong>Microsoft Store 版 Roblox</strong>——这种组合才能让两个客户端同时保持打开。',
+      '已安装 <strong>Roblox 客户端</strong>（来自 roblox.com）。游玩时保持 MultiRoblox 打开——它占用的锁能让额外的实例保持运行。',
     footerHtml:
       'MultiRoblox 为独立工具，与 Roblox Corporation 无关，亦未获其认可。<br />源代码见 <a href="https://github.com/HyperlinksSpace/MultiRoblox">GitHub</a>。',
   },

@@ -1,7 +1,7 @@
 # MultiRoblox
 
-Run **two Roblox clients at the same time** on a single Windows PC, so two
-accounts can play together from one machine.
+Run **as many Roblox instances as you want** on a single Windows PC — one
+button per instance, so several accounts can play together from one machine.
 
 **Org:** [HyperlinksSpace](https://github.com/HyperlinksSpace) · **Site:** https://hyperlinksspace.github.io/MultiRoblox/
 
@@ -11,19 +11,15 @@ Site languages: **EN** · **РУ** · **中文** (switcher at the bottom of the 
 
 Roblox normally allows only one client per computer by holding two named
 kernel objects (`ROBLOX_singletonMutex` and `ROBLOX_singletonEvent`).
-MultiRoblox owns those objects itself while the controller window is open,
-so additional clients are allowed to launch. Nothing is patched or modified
-on disk, and no administrator rights are needed.
-
-The reliable pairing is the **classic desktop player** (from roblox.com)
-together with the **Microsoft Store Roblox app**. The controller launches one
-of each.
+MultiRoblox owns those objects itself while its window is open, so every
+additional client you launch is allowed to stay alive. Nothing is patched or
+modified on disk, and no administrator rights are needed.
 
 ## Download
 
-**[Install-MultiRoblox.cmd](https://github.com/HyperlinksSpace/MultiRoblox/releases/latest/download/Install-MultiRoblox.cmd)** — installs MultiRoblox with Desktop/Start Menu shortcuts and pulls the latest release (auto-update).
+**[MultiRoblox.exe](https://github.com/HyperlinksSpace/MultiRoblox/releases/latest/download/MultiRoblox.exe)** — a single portable .exe. Download, run, press **Launch Instance**.
 
-Or from PowerShell:
+Prefer Start Menu shortcuts and auto-update? Run the installer from PowerShell:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb https://raw.githubusercontent.com/HyperlinksSpace/MultiRoblox/main/installer/Install-MultiRoblox.ps1 | iex"
@@ -31,15 +27,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb https://raw.gi
 
 ## Usage
 
-1. Run the **installer** (`Install-MultiRoblox.cmd`), then open MultiRoblox from the Desktop or Start Menu.
-2. Click **Launch 2 Clients**.
+1. Run **MultiRoblox.exe**.
+2. Press **Launch Instance** — once for every Roblox window you want open.
 3. Sign into a different Roblox account in each window.
-4. Keep the controller open while playing. Click **Stop All Clients** to close them.
+4. Keep MultiRoblox open while playing. Click **Stop All** to close every client.
 
 ## Requirements
 
 - Windows 10 or 11.
-- Both the classic Roblox player and the Microsoft Store Roblox app installed.
+- The Roblox player installed (from roblox.com).
 
 ## Build from source
 

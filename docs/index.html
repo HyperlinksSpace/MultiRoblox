@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MultiRoblox &mdash; Run two Roblox clients at once</title>
-  <meta name="description" content="MultiRoblox lets you run two Roblox clients side by side on one PC. Free, open source, no admin required." />
+  <title>MultiRoblox &mdash; Run as many Roblox instances as you want</title>
+  <meta name="description" content="MultiRoblox lets you run unlimited Roblox instances on one PC. One button per instance. Free, open source, no admin required." />
   <link rel="icon" type="image/png" href="favicon.png" />
   <style>
     :root {
@@ -127,14 +127,14 @@
     <header>
       <span class="badge" data-i18n="badge">Free &bull; Open source &bull; No admin needed</span>
       <h1 class="logo">MultiRoblox</h1>
-      <p class="tag" data-i18n="tagHtml" data-i18n-html>Run <strong>two Roblox clients</strong> at the same time on one PC.</p>
+      <p class="tag" data-i18n="tagHtml" data-i18n-html>Run <strong>as many Roblox instances</strong> as you want on one PC.</p>
 
       <div class="cta">
-        <a class="btn btn-primary" data-i18n="download" href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest/download/Install-MultiRoblox.cmd">
-          &#8681; Download for Windows
+        <a class="btn btn-primary" data-i18n="download" href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest/download/MultiRoblox.exe">
+          &#8681; Download MultiRoblox.exe
         </a>
       </div>
-      <p class="hint" data-i18n="hintHtml" data-i18n-html>One installer with auto-update and shortcuts. Windows 10/11.
+      <p class="hint" data-i18n="hintHtml" data-i18n-html>A single .exe &mdash; no install needed. Windows 10/11.
         See the <a href="https://github.com/HyperlinksSpace/MultiRoblox/releases/latest">latest release</a>.</p>
 
       <div class="lang-switch" role="group" aria-label="Language">
@@ -148,12 +148,12 @@
 
     <div class="cards">
       <div class="card">
-        <h3 data-i18n="card1Title">One click</h3>
-        <p data-i18n="card1Body">Open the app and press &ldquo;Launch 2 Clients&rdquo;. Two Roblox windows open, ready for two accounts.</p>
+        <h3 data-i18n="card1Title">One button</h3>
+        <p data-i18n="card1Body">Press &ldquo;Launch Instance&rdquo; once per Roblox window you want. Every press opens another client.</p>
       </div>
       <div class="card">
         <h3 data-i18n="card2Title">Live status</h3>
-        <p data-i18n="card2Body">See exactly which clients are running and stop them all with a single button.</p>
+        <p data-i18n="card2Body">See every running instance with its uptime and stop them all with a single button.</p>
       </div>
       <div class="card">
         <h3 data-i18n="card3Title">Safe &amp; simple</h3>
@@ -164,16 +164,16 @@
     <section>
       <h2 data-i18n="howTitle">How to use</h2>
       <ol>
-        <li data-i18n="how1Html" data-i18n-html>Download and run the <strong>installer</strong> — it installs MultiRoblox and keeps it up to date.</li>
-        <li data-i18n="how2Html" data-i18n-html>Click <strong>Launch 2 Clients</strong>. The classic player and the Microsoft Store client both open.</li>
+        <li data-i18n="how1Html" data-i18n-html>Download <strong>MultiRoblox.exe</strong> and run it.</li>
+        <li data-i18n="how2Html" data-i18n-html>Press <strong>Launch Instance</strong> &mdash; once for every Roblox window you want open.</li>
         <li data-i18n="how3Html" data-i18n-html>Sign into a <strong>different Roblox account</strong> in each window and join a game.</li>
-        <li data-i18n="how4Html" data-i18n-html>Keep the controller window open while you play. Use <strong>Stop All Clients</strong> when finished.</li>
+        <li data-i18n="how4Html" data-i18n-html>Keep MultiRoblox open while you play. Use <strong>Stop All</strong> when finished.</li>
       </ol>
     </section>
 
     <section>
-      <h2 data-i18n="psTitle">Install from PowerShell</h2>
-      <p data-i18n="psLead">Prefer a command line? This downloads the latest release and adds shortcuts:</p>
+      <h2 data-i18n="psTitle">Optional: install with auto-update</h2>
+      <p data-i18n="psLead">Want Start Menu shortcuts and automatic updates? Run this in PowerShell:</p>
       <div class="code-block">powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb https://raw.githubusercontent.com/HyperlinksSpace/MultiRoblox/main/installer/Install-MultiRoblox.ps1 | iex"</div>
     </section>
 
@@ -181,7 +181,7 @@
       <h2 data-i18n="reqTitle">Requirements</h2>
       <ul>
         <li data-i18n="req1">Windows 10 or 11.</li>
-        <li data-i18n="req2Html" data-i18n-html>The <strong>classic Roblox player</strong> (from roblox.com) <em>and</em> the <strong>Microsoft Store Roblox app</strong> both installed &mdash; this pairing is what allows two clients to stay open.</li>
+        <li data-i18n="req2Html" data-i18n-html>The <strong>Roblox player</strong> installed (from roblox.com). Keep MultiRoblox open while playing &mdash; it holds the lock that lets extra instances stay alive.</li>
       </ul>
     </section>
 
