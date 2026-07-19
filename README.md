@@ -53,7 +53,8 @@ required.
 
 - `.github/workflows/release.yml` builds the controller and publishes a
   GitHub Release whenever a `v*` tag is pushed (or via manual dispatch).
-- `.github/workflows/pages.yml` deploys the `docs/` site to GitHub Pages.
+- The website is served by GitHub Pages directly from the `docs/` folder on
+  `main`, so it updates automatically on every push.
 
 ## Disclaimer
 
